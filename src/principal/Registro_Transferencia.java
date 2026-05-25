@@ -1,5 +1,5 @@
 package principal;
 
-public class Registro_Transferencia {
+public class Registro_Transferencia extends Actividad {
 
 }

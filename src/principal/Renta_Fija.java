@@ -11,4 +11,9 @@ public class Renta_Fija extends Inversion {
         this.tasaDeInteres = tasaDeInteres;
 
 }
+
+    @Override
+   public double calcularResultado() {
+        return super.montoInvertido * tasaDeInteres; //Creo que calcularia de esta manera porque la anterior seria un valor base y ese es el variable de los intereses
+}
 }

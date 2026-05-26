@@ -23,18 +23,28 @@ public class Usuario {
         this.empresasDelegadas = new HashSet<>();
 	}
     public void agregarCuenta(Cuenta nuevaCuenta) {
+        if (this.cuentas.containsKey(nuevaCuenta.ConseguirElCvu())) {
+            throw new IllegalArgumentException("Ya existe una cuenta con el mismo CVU.");
+        }
+        else {
+            this.cuentas.put(nuevaCuenta.ConseguirElCvu(), nuevaCuenta);
+        }
+    
     	
     }
     public boolean tieneAutorizacion(String cuitEmpresa) {
+        return this.empresasDelegadas.contains(cuitEmpresa); //falta implementar mejor porque deberia de buscar el cuit dentro de las empresas
+        
     	
     }
     public double obtenerTotalInvertido() {
-    	
+        return this.totalInvertido;
     }
     public void actualizarTotalInvertido(double monto) {
-    	
+        this.totalInvertido += monto;
     }
     public Cuenta obtenerCuenta(String cvu) {
+        return this.cuentas.get(cvu);
     	
     }
 }

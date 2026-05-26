@@ -22,6 +22,9 @@ public class Cuenta {
         this.historialLocal = new LinkedList<>();
         
     }
+    public String ConseguirElCvu() {
+        return this.cvu;
+    }
 
     public void transferirDinero(double monto) {
         

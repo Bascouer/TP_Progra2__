@@ -14,6 +14,13 @@ public class Usuario {
 
     // Operaciones (incluyendo constructor)
     public Usuario(String dni, String nombre, String telefono, String correo) {
+    	this.cuitPersonal = dni;
+        this.nombre = nombre;
+        this.numeroDeTelefono = telefono;
+        this.correo = correo;
+        this.totalInvertido = 0.0;
+        this.cuentas = new HashMap<>();
+        this.empresasDelegadas = new HashSet<>();
 	}
     public void agregarCuenta(Cuenta nuevaCuenta) {
     	

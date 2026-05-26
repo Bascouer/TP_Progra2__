@@ -13,6 +13,13 @@ public class Cuenta {
 
     // Operaciones (Constructor)
     public Cuenta(String cvu, String alias) {
+    	this.cvu = cvu;
+        this.alias = alias;
+        this.saldo = 0.0;
+        this.dineroInvertido = 0.0;
+        this.dineroEnCuenta = 0.0;
+        this.contadorTransacciones = 0;
+        this.historialLocal = new LinkedList<>();
         
     }
 

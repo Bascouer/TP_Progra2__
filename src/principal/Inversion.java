@@ -8,9 +8,16 @@ public class Inversion {
     private double montoInvertido;
     private boolean esPrecancelable;
     private String estado;
+	private int idInversion;
 
-    // Operaciones (Constructor)
+   
     public Inversion(int idInversion, LocalDateTime fechaConstitucion, int plazo, double montoInvertido) {
+    	this.idInversion = idInversion;
+        this.fechaDeConstitucion = fechaConstitucion;
+        this.plazo = plazo;
+        this.montoInvertido = montoInvertido;
+        this.esPrecancelable = true; 
+        this.estado = "Activa";
         
     }
 

@@ -1,11 +1,32 @@
 package principal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+
 public class Billetera implements IBilletera {
+	private HashMap<String, Usuario> usuarios;
+    private HashMap<String, Empresa> empresas; 
+    private HashMap<String, Cuenta> cuentasPorCvu;
+    private HashMap<String, String> cvuPorAlias;
+    private ArrayList<Actividad> historialGlobal;
+    
+    private int generadorCvu;
+    private int generadorIdInversion;
 
 	public Billetera() {
-		// TODO Auto-generated constructor stub
+		this.usuarios = new HashMap<>();
+        this.empresas = new HashMap<>();
+        this.cuentasPorCvu = new HashMap<>();
+        this.cvuPorAlias = new HashMap<>();
+        this.historialGlobal = new ArrayList<>();
+        
+        // Inicialización de los generadores (pueden arrancar en 1 o el número que prefieras)
+        this.generadorCvu = 1; 
+        this.generadorIdInversion = 1;
+    
+	
 	}
 
 	@Override

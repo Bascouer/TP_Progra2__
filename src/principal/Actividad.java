@@ -10,11 +10,15 @@ public class Actividad {
 
     // Operaciones (Constructor)
     public Actividad(String idActividad, LocalDateTime fecha, double monto, Cuenta cuentaOrigen) {
-        
+        this.idActividad = idActividad;
+        this.fecha = fecha;
+        this.monto = monto;
+        this.cuentaOrigen = cuentaOrigen;
     }
 
-    public void registrarActividad() {
+
         
     }
-
-}
+    public String obtenerDetalle(){
+        return "Actividad ID: " + this.idActividad + ", Fecha: " + this.fecha + ", Monto: " + this.monto;
+    }

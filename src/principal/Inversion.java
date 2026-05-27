@@ -2,11 +2,11 @@ package principal;
 
 import java.time.LocalDateTime;
 
-public class Inversion {
+public  abstract class  Inversion {
 	private LocalDateTime fechaDeConstitucion;
     private int plazo;
     protected double montoInvertido;
-    private boolean esPrecancelable;
+   protected boolean esPrecancelable;
     private String estado;
 	private int idInversion;
 
@@ -21,9 +21,9 @@ public class Inversion {
         
     }
 
-    public double calcularResultado() {
-        return this.montoInvertido * 1.10; //No lo termine todavia ni me fije bien como hacerlo
-    }
+    public abstract double calcularResultado(Cuenta cuenta);
+      
+ 
 
     public void ejecutarPrecancelacion() { 
     if (this.esPrecancelable && this.estado.equals("Activa")) {
@@ -41,7 +41,14 @@ public class Inversion {
             this.estado = "Finalizada";
         }
         
+     
         
+        
+    }
+    
+    public double obtenerMontoInvertido() {
+    	return this.montoInvertido;
+    	
     }
 
 

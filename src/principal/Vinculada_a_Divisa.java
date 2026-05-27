@@ -16,8 +16,8 @@ public class Vinculada_a_Divisa extends Inversion {
 
 
     @Override
-    public double calcularResultado() { //usa su divisaReferente e interesPorDivisa para calcular el resultado de la inversion
-        return super.montoInvertido * interesPorDivisa; 
+    public double calcularResultado(Cuenta cuenta) { //usa su divisaReferente e interesPorDivisa para calcular el resultado de la inversion
+        return super.montoInvertido * interesPorDivisa * cuenta.obtenerFactorDeCalculo(); 
     }
      
 }

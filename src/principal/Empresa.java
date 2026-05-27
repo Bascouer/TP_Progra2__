@@ -28,16 +28,19 @@ public class Empresa {
 
     // Agrega el DNI de un usuario a la lista de autorizados
     public void agregarUsuarioAutorizado(String dni) {
+    	dnisAutorizados.add(dni);
         
     }
 
     // Verifica en O(1) si un DNI está dentro del HashSet de autorizados
     public boolean estaAutorizado(String dni) {
-        return false;
-    }
+    		return dnisAutorizados.contains(dni);
+    	}
+        
+    
 
     // Devuelve el identificador de la empresa
     public String obtenerCuit() {
-        return null;
+        return this.cuit;
     }
 }

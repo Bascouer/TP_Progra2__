@@ -8,5 +8,9 @@ public class Cuenta_Corporativa extends Cuenta {
         super(cvu, alias);
         this.cuitEmpresa = cuitEmpresa;
     }
+    @Override 
+	  public double obtenerFactorDeCalculo() {
+	        return 1.0;
+	    }
 
 }

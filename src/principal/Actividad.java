@@ -18,7 +18,8 @@ public class Actividad {
 
 
         
-    }
+    
     public String obtenerDetalle(){
         return "Actividad ID: " + this.idActividad + ", Fecha: " + this.fecha + ", Monto: " + this.monto;
     }
+}

@@ -6,5 +6,15 @@ public class Cuenta_Regular extends Cuenta {
 		super(cvu, alias);
 	
 	}
+	  public boolean validarReglas() {
+	        if (this.saldo >= 5000000) {
+	        	throw new IllegalArgumentException("El saldo sobrepasa el limite permitido");
+	        }
+			return true;
+	    }
+	  @Override 
+	  public double obtenerFactorDeCalculo() {
+	        return 1.0;
+	    }
 
 }

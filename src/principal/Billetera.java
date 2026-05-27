@@ -32,32 +32,68 @@ public class Billetera implements IBilletera {
 	@Override
 	public void registrarEmpresa(String cuit, String nombreFantasia, String telefono, String email,
 			String nombreContacto) {
-		// TODO Auto-generated method stub
+		Empresa emprecita = new Empresa(cuit, nombreFantasia, telefono, email, nombreContacto);
+		empresas.put(cuit, emprecita);
+		
+		
+		
+		
 
 	}
 
 	@Override
 	public void agregarPersonaAutorizada(String cuitEmpresa, String dniAutorizado) {
-		// TODO Auto-generated method stub
+		if(!usuarios.containsKey(dniAutorizado)) {
+			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
+		}
+		if(!empresas.containsKey(cuitEmpresa)) {
+			throw new IllegalArgumentException(" El cuit no se encuentra asociado a ninguna empresa");
+			
+		}
+		Empresa empresita = empresas.get(cuitEmpresa);
+		empresita.agregarUsuarioAutorizado(dniAutorizado);
 
 	}
 
 	@Override
 	public void registrarUsuario(String dni, String nombre, String telefono, String email) {
-		// TODO Auto-generated method stub
+		Usuario user = new Usuario(dni , nombre, telefono, email);
+		usuarios.put(dni , user);
+		
 
 	}
 
 	@Override
 	public String crearCuentaRegular(String dniUsuario, String alias) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!usuarios.containsKey(dniUsuario)) {
+			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
+		}
+		String cvu = String.valueOf(generadorCvu);
+		generadorCvu++;
+		Cuenta_Regular cuentaR = new Cuenta_Regular (cvu, alias);
+		Usuario user = usuarios.get(dniUsuario);
+		user.agregarCuenta(cuentaR);
+		cuentasPorCvu.put(cvu , cuentaR);
+		cvuPorAlias.put(alias , cvu );
+		return cvu;
+		
 	}
 
 	@Override
 	public String crearCuentaPremium(String dniUsuario, String alias, double depositoInicial) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!usuarios.containsKey(dniUsuario)) {
+			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
+		}
+		String cvu = String.valueOf(generadorCvu);
+		generadorCvu++;
+		Cuenta_Premium cuentaP = new Cuenta_Premium (cvu, alias, depositoInicial);
+		Usuario user = usuarios.get(dniUsuario);
+		user.agregarCuenta(cuentaP);
+		cuentasPorCvu.put(cvu , cuentaP);
+		cvuPorAlias.put(alias , cvu );
+		return cvu;
+
+		
 	}
 
 	@Override

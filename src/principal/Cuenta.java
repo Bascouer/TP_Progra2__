@@ -1,7 +1,10 @@
 package principal;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Cuenta {
 	private String cvu;
@@ -11,6 +14,7 @@ public class Cuenta {
     private double dineroEnCuenta;
     private int contadorTransacciones;
     private LinkedList<Actividad> historialLocal;
+    private HashMap<Integer, Inversion> inversiones;
 
     // Operaciones (Constructor)
     public Cuenta(String cvu, String alias) {
@@ -27,7 +31,7 @@ public class Cuenta {
         return this.cvu;
     }
 
-    public void transferirDinero(double monto, String cvuDestino, boolean esInterna) {
+    public Actividad transferirDinero(double monto, String cvuDestino, boolean esInterna) {
         // 1. Validamos que haya plata suficiente (opcional, pero buena práctica)
         if (this.saldo < monto) {
             throw new IllegalArgumentException("Saldo insuficiente para transferir.");
@@ -47,6 +51,8 @@ public class Cuenta {
 
         // 5. Lo guardamos en el historial de la cuenta
         this.historialLocal.add(ticket);
+        aumentarContadorDeTransacciones();
+        return ticket;
     }
 
     public void agregarDinero(double monto) {
@@ -80,7 +86,7 @@ public class Cuenta {
         return this.saldo;
     }
 
-    public void invertirDinero(double monto, String tipoOperacion) {
+    public Actividad invertirDinero(double monto, Inversion inversion, String tipoOperacion) {
         // 1. Validamos saldo
         if (this.saldo < monto) {
             throw new IllegalArgumentException("Saldo insuficiente para invertir.");
@@ -102,6 +108,8 @@ public class Cuenta {
 
         // 5. Lo guardamos en el historial local
         this.historialLocal.add(ticket);
+        inversiones.put(inversion.obtenerId(), inversion);
+        return ticket;
     }
    
 
@@ -112,6 +120,32 @@ public class Cuenta {
     public double obtenerFactorDeCalculo() { // esta funcion se utiliza para hacer el calculo de benefiicios de cada cuenta; por ejemplo si es una cuenta premium tiene unas mejores comisiones
         return 1.0;
     }
+    
+    public Inversion obtenerInversion(int idInversion) {
+        return inversiones.get(idInversion);
+    }
+    public Actividad registrarCancelacion(double monto) {
+        String idTicket = "CAN-" + System.currentTimeMillis();
+        LocalDateTime fechaActual = LocalDateTime.now();
+        Registro_Inversion ticket = new Registro_Inversion(idTicket, fechaActual, monto, this, "Cancelacion");
+        this.historialLocal.add(ticket);
+        return ticket;
+    }
+
+	public List<String> consultarHistorial() {
+		List<String> resultado = new ArrayList<>();
+		for(Actividad actividad : historialLocal) {
+		    resultado.add(actividad.obtenerDetalle());
+		}
+		return resultado;
+	}
+	public void aumentarContadorDeTransacciones() {
+		contadorTransacciones +=1;
+	}
+	public int obtenerContadorDeTransacciones() {
+		return this.contadorTransacciones;
+	}
+
 
 }
 	

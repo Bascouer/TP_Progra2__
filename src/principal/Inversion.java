@@ -50,6 +50,10 @@ public  abstract class  Inversion {
     	return this.montoInvertido;
     	
     }
+    
+    public int obtenerId() {
+    	return this.idInversion;
+    }
 
 
 }

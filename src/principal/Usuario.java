@@ -1,7 +1,9 @@
 package principal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class Usuario {
 	private String nombre;
@@ -29,7 +31,12 @@ public class Usuario {
         else {
             this.cuentas.put(nuevaCuenta.ConseguirElCvu(), nuevaCuenta);
         }
+  	
+    }
     
+    public void agregarEmpresaAutorizada(String cuit) {
+    	empresasDelegadas.add(cuit);
+    	
     	
     }
     public boolean tieneAutorizacion(String cuitEmpresa) {
@@ -46,5 +53,9 @@ public class Usuario {
     public Cuenta obtenerCuenta(String cvu) {
         return this.cuentas.get(cvu);
     	
+    }
+    
+    public List<String> obtenerCvus() {
+        return new ArrayList<>(cuentas.keySet());
     }
 }

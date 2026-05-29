@@ -8,7 +8,7 @@ public class Cuenta_Regular extends Cuenta {
 	}
 	  public boolean validarReglas() {
 	        if (this.saldo >= 5000000) {
-	        	throw new IllegalArgumentException("El saldo sobrepasa el limite permitido");
+	        	throw new IllegalStateException("El saldo sobrepasa el limite permitido");
 	        }
 			return true;
 	    }
@@ -16,5 +16,9 @@ public class Cuenta_Regular extends Cuenta {
 	  public double obtenerFactorDeCalculo() {
 	        return 1.0;
 	    }
+	  @Override 
+	  public String obtenerTipo() {
+			return "Cuenta Regular";
+		}
 
 }

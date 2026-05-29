@@ -26,6 +26,7 @@ public class Billetera implements IBilletera {
         this.historialGlobal = new ArrayList<>();
         this.cvuPorDni = new HashMap<>();
         
+        
         // Inicialización de los generadores (pueden arrancar en 1 o el número que prefieras)
         this.generadorCvu = 1; 
         this.generadorIdInversion = 1;
@@ -47,18 +48,12 @@ public class Billetera implements IBilletera {
 
 	@Override
 	public void agregarPersonaAutorizada(String cuitEmpresa, String dniAutorizado) {
-		if(!usuarios.containsKey(dniAutorizado)) {
-			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
-		}
 		if(!empresas.containsKey(cuitEmpresa)) {
 			throw new IllegalArgumentException(" El cuit no se encuentra asociado a ninguna empresa");
 			
 		}
 		Empresa empresita = empresas.get(cuitEmpresa);
 		empresita.agregarUsuarioAutorizado(dniAutorizado);
-		Usuario user = usuarios.get(dniAutorizado);
-		user.agregarEmpresaAutorizada(cuitEmpresa);
-
 	}
 
 	@Override
@@ -91,6 +86,9 @@ public class Billetera implements IBilletera {
 		if(!usuarios.containsKey(dniUsuario)) {
 			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
 		}
+		if(depositoInicial < 500000) {
+		    throw new IllegalArgumentException("El deposito inicial debe ser mayor a 500000");
+		}
 		String cvu = String.valueOf(generadorCvu);
 		generadorCvu++;
 		Cuenta_Premium cuentaP = new Cuenta_Premium (cvu, alias, depositoInicial);
@@ -106,35 +104,38 @@ public class Billetera implements IBilletera {
 
 	@Override
 	public String crearCuentaCorporativa(String dniUsuario, String alias, String cuitEmpresa) {
-		if(!usuarios.containsKey(dniUsuario)) {
-			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
-		}
-		if(!empresas.containsKey(cuitEmpresa)) {
-			throw new IllegalArgumentException(" El cuit no se encuentra asociado a ninguna empresa");
-	}
-		Usuario user = usuarios.get(dniUsuario);
-		
-		if(!user.tieneAutorizacion(cuitEmpresa)) {
-			throw new IllegalArgumentException(" El Usuario no esta autorizado para gestionar la cuenta");	
-		}
-		
-		String cvu = String.valueOf(generadorCvu);
-		generadorCvu++;
-		Cuenta_Corporativa cuentaC = new Cuenta_Corporativa(cvu , alias , cuitEmpresa);
-		user.agregarCuenta(cuentaC);
-		cuentasPorCvu.put(cvu , cuentaC);
-		cvuPorAlias.put(alias , cvu );
-		cvuPorDni.put(cvu, dniUsuario);
-		return cvu;
-	}
+	    if(!usuarios.containsKey(dniUsuario)) {
+	        throw new IllegalArgumentException("El dni no existe");
+	    }
+	    if(!empresas.containsKey(cuitEmpresa)) {
+	        throw new IllegalArgumentException("El cuit no existe");
+	    }
+	    Empresa empresa = empresas.get(cuitEmpresa);
+	    if(!empresa.estaAutorizado(dniUsuario)) {
+	        throw new IllegalArgumentException("El usuario no está autorizado");
+	    }
+	    String cvu = String.valueOf(generadorCvu);
+	    generadorCvu++;
+	    Cuenta_Corporativa cuentaC = new Cuenta_Corporativa(cvu, alias, cuitEmpresa);
+	    usuarios.get(dniUsuario).agregarCuenta(cuentaC);
+	    cuentasPorCvu.put(cvu, cuentaC);
+	    cvuPorAlias.put(alias, cvu);
+	    cvuPorDni.put(cvu, dniUsuario);
+	    return cvu;
+}
 
 	@Override
 	public List<String> obtenerCuentas(String dniUsuario) {
-		if(!usuarios.containsKey(dniUsuario)) {
-			throw new IllegalArgumentException(" El dni no se encuentra asociado a ningun usuario");
-		}
-		Usuario user = usuarios.get(dniUsuario);
-		return user.obtenerCvus();
+	    if(!usuarios.containsKey(dniUsuario)) {
+	        throw new IllegalArgumentException("El dni no se encuentra asociado a ningun usuario");
+	    }
+	    Usuario usuario = usuarios.get(dniUsuario);
+	    List<String> resultado = new ArrayList<>();
+	    for(String cvu : usuario.obtenerCvus()) {
+	        Cuenta cuenta = cuentasPorCvu.get(cvu);
+	        resultado.add(cuenta.obtenerTipo() + ": " + cuenta.obtenerAlias() + " (" + cvu + ")");
+	    }
+	    return resultado;
 	}
 
 	@Override
@@ -164,10 +165,12 @@ public class Billetera implements IBilletera {
 		if(cvuPorDni.get(cvuOrigen).equals(cvuPorDni.get(cvuDestino))) {
 			historialGlobal.add(cuenta.transferirDinero(monto, cvuDestino, true));
 			cuenta2.agregarDinero(monto);	
+			historialGlobal.add(cuenta2.registrarTransferenciaRecibida(monto, cvuOrigen));
 		} 
 		else {
 			historialGlobal.add(cuenta.transferirDinero(monto, cvuDestino, false));
 			cuenta2.agregarDinero(monto);
+			historialGlobal.add(cuenta2.registrarTransferenciaRecibida(monto, cvuOrigen));
 			
 		}
 	
@@ -183,7 +186,7 @@ public class Billetera implements IBilletera {
 			throw new IllegalArgumentException("La cuenta no existe");	
 		}
 		LocalDateTime fechaActual = LocalDateTime.now();
-		Renta_Fija inversion = new Renta_Fija(generadorIdInversion , fechaActual, plazoDias, monto, 0.10 );
+		Renta_Fija inversion = new Renta_Fija(generadorIdInversion , fechaActual, plazoDias, monto, 0.20 );
 		
 		generadorIdInversion++;
 		Cuenta cuenta = cuentasPorCvu.get(cvu);
@@ -253,11 +256,13 @@ public class Billetera implements IBilletera {
 		if(inversion == null) {
 		    throw new IllegalArgumentException("La inversion no existe");
 		}
-		inversion.ejecutarPrecancelacion();
-		double monto = inversion.obtenerMontoInvertido();
-		cuenta.agregarDinero(monto);
-		usuarios.get(dni).actualizarTotalInvertido(-monto);
-		historialGlobal.add(cuenta.registrarCancelacion(monto));
+		double montoOriginal = inversion.obtenerMontoInvertido();
+		inversion.ejecutarPrecancelacion(cuenta);
+		double montoFinal = inversion.obtenerMontoInvertido();
+		cuenta.liberarDineroInvertido(montoOriginal); // libera el dinero invertido
+		cuenta.agregarDinero(montoFinal); // devuelve al saldo el monto con penalidad
+		usuarios.get(dni).actualizarTotalInvertido(-montoOriginal);
+		historialGlobal.add(cuenta.registrarCancelacion(montoOriginal));
 		}
 		
 		
@@ -323,6 +328,16 @@ public class Billetera implements IBilletera {
 		    resultado.add(cuentas.get(i).ConseguirElCvu());
 		}
 		return resultado;
+	}
+	
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("=== Billetera ===\n");
+	    for(Usuario usuario : usuarios.values()) {
+	        sb.append(usuario.toString()).append("\n");
+	    }
+	    return sb.toString();
 	}
 
 }

@@ -12,5 +12,11 @@ public class Cuenta_Corporativa extends Cuenta {
 	  public double obtenerFactorDeCalculo() {
 	        return 1.0;
 	    }
+    
+    @Override 
+	  public String obtenerTipo() {
+			return "Cuenta Corporativa";
+		}
+
 
 }

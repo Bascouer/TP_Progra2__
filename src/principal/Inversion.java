@@ -3,7 +3,7 @@ package principal;
 import java.time.LocalDateTime;
 
 public  abstract class  Inversion {
-	private LocalDateTime fechaDeConstitucion;
+	protected LocalDateTime fechaDeConstitucion;
     private int plazo;
     protected double montoInvertido;
    protected boolean esPrecancelable;
@@ -25,25 +25,22 @@ public  abstract class  Inversion {
       
  
 
-    public void ejecutarPrecancelacion() { 
-    if (this.esPrecancelable && this.estado.equals("Activa")) {
+    public void ejecutarPrecancelacion(Cuenta cuenta) {
+        if (this.esPrecancelable && this.estado.equals("Activa")) {
             this.estado = "Precancelada";
+            this.montoInvertido = calcularMontoFinal(cuenta);
         } else {
             throw new IllegalStateException("La inversión no es precancelable o no está activa.");
         }
-        
-    
-        
     }
-
-    public void actualizarEstado() {//va a ir rotando de estado si es activa pasa a finalizada FALTA VERIFICAS QUE SE CUMPLEN LOS PLAZOS Y DEMAS
+    public void actualizarEstado() {
         if (this.estado.equals("Activa")){ 
             this.estado = "Finalizada";
-        }
-        
-     
-        
-        
+        }      
+    }
+    
+    public double calcularMontoFinal(Cuenta cuenta) {
+        return montoInvertido + calcularResultado(cuenta) / 2;
     }
     
     public double obtenerMontoInvertido() {

@@ -1,6 +1,7 @@
 package principal;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Renta_Fija extends Inversion {
 	private double tasaDeInteres;
@@ -13,7 +14,8 @@ public class Renta_Fija extends Inversion {
 }
     @Override
    public double calcularResultado(Cuenta cuenta) {
-        return super.montoInvertido * tasaDeInteres * cuenta.obtenerFactorDeCalculo(); //Creo que calcularia de esta manera porque la anterior seria un valor base y ese es el variable de los intereses
+    	long dias = ChronoUnit.DAYS.between(fechaDeConstitucion.toLocalDate(), Utilitarios.hoy());
+    	return montoInvertido * (tasaDeInteres / 365) * dias;
 }
 
   

@@ -6,17 +6,17 @@ public class Cuenta_Premium extends Cuenta {
 		super(cvu, alias);
 		agregarDinero(depositoInicial);
 	}
-	public boolean validarReglas() {
-        if (this.saldo < 500000) {
-        	throw new IllegalArgumentException("El saldo es menor al requerido");
-        }
-		return true;
-    }
+
 	
 	 @Override 
 	  public double obtenerFactorDeCalculo() {
 	        return 1.0;
 	    }
+	  @Override 
+	  public String obtenerTipo() {
+			return "Cuenta Premium";
+		}
+
 
 
 }

@@ -25,6 +25,7 @@ public class Cuenta {
         this.dineroEnCuenta = 0.0;
         this.contadorTransacciones = 0;
         this.historialLocal = new LinkedList<>();
+        this.inversiones = new HashMap<>();
         
     }
     public String ConseguirElCvu() {
@@ -111,6 +112,12 @@ public class Cuenta {
         inversiones.put(inversion.obtenerId(), inversion);
         return ticket;
     }
+    public Actividad registrarTransferenciaRecibida(double monto, String cvuOrigen) {
+        String idTicket = "TRX-" + System.currentTimeMillis();
+        Registro_Transferencia ticket = new Registro_Transferencia(idTicket, LocalDateTime.now(), monto, this, cvuOrigen, false);
+        this.historialLocal.add(ticket);
+        return ticket;
+    }
    
 
     public boolean validarReglas() {
@@ -131,6 +138,10 @@ public class Cuenta {
         this.historialLocal.add(ticket);
         return ticket;
     }
+    public void liberarDineroInvertido(double monto) {
+        this.dineroInvertido -= monto;
+        this.actualizarDineroEnCuenta();
+    }
 
 	public List<String> consultarHistorial() {
 		List<String> resultado = new ArrayList<>();
@@ -144,6 +155,22 @@ public class Cuenta {
 	}
 	public int obtenerContadorDeTransacciones() {
 		return this.contadorTransacciones;
+	}
+	
+	public String obtenerAlias() {
+		return this.alias;
+	}
+	
+	public String obtenerTipo() {
+		return "";
+	}
+	
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(obtenerTipo()).append(": ").append(alias).append(" (").append(cvu).append(")");
+	    sb.append(" | Saldo: ").append(saldo);
+	    return sb.toString();
 	}
 
 

@@ -1,6 +1,7 @@
 package principal;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Fondo_de_Liquidez_Empresarial extends Inversion {
 	public Fondo_de_Liquidez_Empresarial(int idInversion, LocalDateTime fechaConstitucion, int plazo, double montoInvertido) {
@@ -11,6 +12,7 @@ public class Fondo_de_Liquidez_Empresarial extends Inversion {
 
 	@Override
 	public double calcularResultado(Cuenta cuenta) {
-		 return super.montoInvertido * cuenta.obtenerFactorDeCalculo();
+		long dias = ChronoUnit.DAYS.between(fechaDeConstitucion.toLocalDate(), Utilitarios.hoy());
+	    return montoInvertido * (0.08 / 365) * dias;
 	}
 }

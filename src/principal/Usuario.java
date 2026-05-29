@@ -58,4 +58,14 @@ public class Usuario {
     public List<String> obtenerCvus() {
         return new ArrayList<>(cuentas.keySet());
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Usuario: ").append(nombre).append(" (DNI: ").append(cuitPersonal).append(")\n");
+        for(Cuenta cuenta : cuentas.values()) {
+            sb.append("  ").append(cuenta.toString()).append("\n");
+        }
+        return sb.toString();
+    }
 }
